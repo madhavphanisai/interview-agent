@@ -1,0 +1,88 @@
+{
+  "domain": "front_end",
+  "levels": {
+    "entry": [
+      {
+        "id": "fe-e-01",
+        "question": "Explain the difference between block and inline elements in HTML.",
+        "competency": "technical",
+        "difficulty": 1,
+        "tags": ["html","layout"],
+        "followup_ids": [],
+        "weight": 1,
+        "keywords": ["block","inline","display","div","span"],
+        "example_answer": "Block elements start on new lines and take full width (div, p); inline elements flow within lines and take only required width (span, a). CSS display controls layout."
+      },
+      {
+        "id": "fe-e-02",
+        "question": "What is the virtual DOM and why do frameworks use it?",
+        "competency": "technical",
+        "difficulty": 1,
+        "tags": ["react","vdom","performance"],
+        "followup_ids": [],
+        "weight": 1,
+        "keywords": ["virtual DOM","diffing","render","performance","react"],
+        "example_answer": "Virtual DOM is an in-memory UI representation. Frameworks diff VDOMs to compute minimal real DOM updates, improving performance for many changes."
+      },
+      {
+        "id": "fe-e-03",
+        "question": "How do you make a web app responsive?",
+        "competency": "technical",
+        "difficulty": 1,
+        "tags": ["css","responsive","layout"],
+        "followup_ids": [],
+        "weight": 1,
+        "keywords": ["media query","flexbox","grid","breakpoint","responsive"],
+        "example_answer": "Use responsive CSS (flexbox/grid), media queries for breakpoints, fluid units, and responsive images (srcset) to adapt layouts."
+      }
+    ],
+    "medium": [
+      {
+        "id": "fe-m-01",
+        "question": "How do you optimize frontend performance for initial page load?",
+        "competency": "technical",
+        "difficulty": 2,
+        "tags": ["performance","loading","cdn"],
+        "followup_ids": ["fe-m-02"],
+        "weight": 2,
+        "keywords": ["critical css","code splitting","lazy loading","cdn","minify"],
+        "example_answer": "Inline critical CSS, defer non-critical JS, use code splitting and lazy loading, compress assets, serve static via CDN, and cache aggressively to improve first meaningful paint."
+      },
+      {
+        "id": "fe-m-02",
+        "question": "Explain accessibility best practices for web interfaces.",
+        "competency": "technical",
+        "difficulty": 2,
+        "tags": ["a11y","testing","semantic"],
+        "followup_ids": [],
+        "weight": 2,
+        "keywords": ["a11y","aria","semantic html","keyboard","contrast"],
+        "example_answer": "Use semantic HTML and ARIA where needed, ensure keyboard navigation and screen reader compatibility, provide alt text and maintain color contrast for accessibility."
+      }
+    ],
+    "senior": [
+      {
+        "id": "fe-s-01",
+        "question": "Design a strategy to migrate a large legacy frontend to a modern framework with minimal disruption.",
+        "competency": "technical",
+        "difficulty": 3,
+        "tags": ["migration","microfrontend","testing"],
+        "followup_ids": ["fe-s-02"],
+        "weight": 3,
+        "keywords": ["migration","microfrontends","backward compatibility","testing"],
+        "example_answer": "Use incremental migration (microfrontends or adapters), migrate feature-by-feature, ensure thorough E2E/regression testing and feature flags to reduce user impact."
+      },
+      {
+        "id": "fe-s-02",
+        "question": "How would you structure state management in a large SPA worked on by multiple teams?",
+        "competency": "technical",
+        "difficulty": 3,
+        "tags": ["state","architecture","scalability"],
+        "followup_ids": [],
+        "weight": 3,
+        "keywords": ["redux","context","bounded contexts","encapsulation","api"],
+        "example_answer": "Use bounded contexts, local UI state per component, a global store for cross-cutting concerns via clear APIs, favor event-driven communication and document patterns across teams."
+      }
+    ]
+  }
+}

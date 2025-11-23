@@ -1,0 +1,110 @@
+{
+  "domain": "machine_learning",
+  "levels": {
+    "entry": [
+      {
+        "id": "ml-e-01",
+        "question": "Explain the difference between supervised and unsupervised learning.",
+        "competency": "technical",
+        "difficulty": 1,
+        "tags": ["ml-fundamentals","supervised","unsupervised"],
+        "followup_ids": ["ml-e-02"],
+        "weight": 1,
+        "keywords": ["supervised","unsupervised","labels","clustering","classification","regression"],
+        "example_answer": "Supervised learning uses labeled data for mapping input to output (classification/regression). Unsupervised finds structure in unlabeled data (clustering, dimensionality reduction)."
+      },
+      {
+        "id": "ml-e-02",
+        "question": "What is overfitting and how can you prevent it?",
+        "competency": "technical",
+        "difficulty": 1,
+        "tags": ["ml-fundamentals","overfitting","regularization"],
+        "followup_ids": [],
+        "weight": 1,
+        "keywords": ["overfitting","regularization","cross-validation","dropout","augmentation"],
+        "example_answer": "Overfitting happens when the model learns noise and fails to generalize. Prevent with regularization (L1/L2), cross-validation, early stopping, dropout, and more or better data."
+      },
+      {
+        "id": "ml-e-03",
+        "question": "Describe train/validation/test split and why each is needed.",
+        "competency": "technical",
+        "difficulty": 1,
+        "tags": ["evaluation","data-split"],
+        "followup_ids": [],
+        "weight": 1,
+        "keywords": ["train","validation","test","hyperparameter","generalization"],
+        "example_answer": "Train fits model parameters, validation tunes hyperparameters, test evaluates final generalization. Keep test untouched until final evaluation."
+      }
+    ],
+    "medium": [
+      {
+        "id": "ml-m-01",
+        "question": "How would you handle imbalanced classes in a binary classification problem?",
+        "competency": "technical",
+        "difficulty": 2,
+        "tags": ["class-imbalance","evaluation","preprocessing"],
+        "followup_ids": ["ml-m-02"],
+        "weight": 2,
+        "keywords": ["imbalanced","resampling","class weights","precision","recall","smote"],
+        "example_answer": "Use resampling (oversample minority or undersample majority), class weights in loss, adjust evaluation metrics (precision/recall, F1), or generate synthetic samples (SMOTE)."
+      },
+      {
+        "id": "ml-m-02",
+        "question": "Design a pipeline to deploy a trained ML model to production (briefly).",
+        "competency": "technical",
+        "difficulty": 2,
+        "tags": ["deployment","serving","monitoring"],
+        "followup_ids": [],
+        "weight": 2,
+        "keywords": ["model serving","docker","api","monitoring","retraining","canary"],
+        "example_answer": "Containerize model server (FastAPI/TorchServe), serve behind a load balancer, monitor inputs and metrics, set up logging and drift detection, and use CI/CD with canary rollouts for updates."
+      },
+      {
+        "id": "ml-m-03",
+        "question": "Explain bias-variance tradeoff and how model complexity affects it.",
+        "competency": "technical",
+        "difficulty": 2,
+        "tags": ["theory","bias-variance"],
+        "followup_ids": [],
+        "weight": 2,
+        "keywords": ["bias","variance","underfitting","overfitting","complexity"],
+        "example_answer": "Simpler models have high bias (underfit) and low variance; complex models have low bias but high variance (overfit). Use regularization, more data, or simpler models to balance."
+      }
+    ],
+    "senior": [
+      {
+        "id": "ml-s-01",
+        "question": "How would you detect and handle data drift in a production model?",
+        "competency": "technical",
+        "difficulty": 3,
+        "tags": ["data-drift","monitoring","retrain"],
+        "followup_ids": ["ml-s-02"],
+        "weight": 3,
+        "keywords": ["data drift","concept drift","ks test","monitoring","retrain","alert"],
+        "example_answer": "Monitor feature distributions and model inputs over time, use statistical tests (KS test) for drift, set alerts on performance degradation, and automate retraining or human review when thresholds pass."
+      },
+      {
+        "id": "ml-s-02",
+        "question": "Explain tradeoffs between model accuracy and inference latency for real-time systems.",
+        "competency": "technical",
+        "difficulty": 3,
+        "tags": ["latency","inference","optimization"],
+        "followup_ids": [],
+        "weight": 3,
+        "keywords": ["latency","throughput","accuracy","quantization","distillation","batching"],
+        "example_answer": "Higher-accuracy models can be slower; use distillation, quantization, batching, hardware accel, or hybrid approaches (fast fallback + heavy model) to meet SLOs while preserving accuracy."
+      },
+      {
+        "id": "ml-s-03",
+        "question": "Design metrics and alerts to monitor an ML model in production.",
+        "competency": "technical",
+        "difficulty": 3,
+        "tags": ["monitoring","metrics","slo"],
+        "followup_ids": [],
+        "weight": 3,
+        "keywords": ["latency","error rate","data drift","input stats","slo","alert"],
+        "example_answer": "Track prediction distribution, feature drift, latency, error rates, and business KPIs. Set thresholds and alerts for drift or SLA breaches; include dashboards and automated retrain triggers."
+      }
+    ]
+  }
+}

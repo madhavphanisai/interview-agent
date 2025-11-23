@@ -1,0 +1,110 @@
+{
+  "domain": "dsa",
+  "levels": {
+    "entry": [
+      {
+        "id": "dsa-e-01",
+        "question": "Explain the difference between arrays and linked lists.",
+        "competency": "technical",
+        "difficulty": 1,
+        "tags": ["array","linked_list","complexity"],
+        "followup_ids": ["dsa-e-02"],
+        "weight": 1,
+        "keywords": ["array","linked list","random access","insert","delete"],
+        "example_answer": "Arrays provide O(1) random access and contiguous memory; linked lists provide O(1) inserts at head but O(n) random access due to pointer traversal."
+      },
+      {
+        "id": "dsa-e-02",
+        "question": "What is a stack and where is it used?",
+        "competency": "technical",
+        "difficulty": 1,
+        "tags": ["stack","recursion","data_structure"],
+        "followup_ids": [],
+        "weight": 1,
+        "keywords": ["stack","LIFO","recursion","push","pop"],
+        "example_answer": "Stack is LIFO structure used for recursion, undo functionality, and parsing. Operations: push, pop, peek."
+      },
+      {
+        "id": "dsa-e-03",
+        "question": "Explain Big-O notation and give an example.",
+        "competency": "technical",
+        "difficulty": 1,
+        "tags": ["complexity","analysis"],
+        "followup_ids": [],
+        "weight": 1,
+        "keywords": ["big o","time complexity","n","linear","quadratic"],
+        "example_answer": "Big-O describes asymptotic upper bounds. Example: single loop over n is O(n); nested loops over n are O(n^2)."
+      }
+    ],
+    "medium": [
+      {
+        "id": "dsa-m-01",
+        "question": "Describe how a hash table works and how collisions are handled.",
+        "competency": "technical",
+        "difficulty": 2,
+        "tags": ["hash_table","collision","data_structure"],
+        "followup_ids": ["dsa-m-02"],
+        "weight": 2,
+        "keywords": ["hash table","collision","chaining","open addressing","load factor"],
+        "example_answer": "Hash table maps keys via a hash function to buckets. Collisions handled via chaining (linked lists) or open addressing (probing). Resize when load factor high."
+      },
+      {
+        "id": "dsa-m-02",
+        "question": "How do you find the middle of a singly linked list in one pass?",
+        "competency": "technical",
+        "difficulty": 2,
+        "tags": ["linked_list","two_pointers","algorithm"],
+        "followup_ids": [],
+        "weight": 2,
+        "keywords": ["slow","fast","two pointers","middle"],
+        "example_answer": "Use slow and fast pointers: slow moves one step, fast moves two steps. When fast reaches end, slow is at middle."
+      },
+      {
+        "id": "dsa-m-03",
+        "question": "Explain Dijkstra's algorithm and a typical use-case.",
+        "competency": "technical",
+        "difficulty": 2,
+        "tags": ["graph","shortest_path","algorithm"],
+        "followup_ids": [],
+        "weight": 2,
+        "keywords": ["dijkstra","shortest path","priority queue","graph"],
+        "example_answer": "Dijkstra finds shortest paths from a source in graphs with non-negative weights using a priority queue; used for routing."
+      }
+    ],
+    "senior": [
+      {
+        "id": "dsa-s-01",
+        "question": "Compare AVL trees and Red-Black trees. When would you choose one over the other?",
+        "competency": "technical",
+        "difficulty": 3,
+        "tags": ["trees","avl","red-black","balanced"],
+        "followup_ids": [],
+        "weight": 3,
+        "keywords": ["avl","red-black","balance","rotation","complexity"],
+        "example_answer": "AVL trees are more strictly balanced (faster lookups) but costlier on updates due to rotations. Red-Black trees are less strict, cheaper on updates, and good for general-purpose maps/sets."
+      },
+      {
+        "id": "dsa-s-02",
+        "question": "Design a cache eviction policy for mixed access patterns. Which policy would you choose and why?",
+        "competency": "technical",
+        "difficulty": 3,
+        "tags": ["cache","eviction","systems"],
+        "followup_ids": [],
+        "weight": 3,
+        "keywords": ["lru","lfu","ttl","eviction","hit rate"],
+        "example_answer": "LRU suits recency-based access, LFU for frequency-based. For mixed patterns combine TTL with segmented LRU or adaptive policies and monitor hit/miss to tune parameters."
+      },
+      {
+        "id": "dsa-s-03",
+        "question": "How would you approach optimizing memory usage for a large-scale in-memory dataset?",
+        "competency": "technical",
+        "difficulty": 3,
+        "tags": ["memory","optimization","systems"],
+        "followup_ids": [],
+        "weight": 3,
+        "keywords": ["memory","compression","serialization","batching","gc"],
+        "example_answer": "Use compact data structures, compress keys/values, use memory-mapped files or columnar formats, tune GC, and shard data to reduce per-process footprint."
+      }
+    ]
+  }
+}

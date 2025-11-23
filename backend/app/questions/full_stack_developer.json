@@ -1,0 +1,121 @@
+{
+  "domain": "full_stack_developer",
+  "levels": {
+    "entry": [
+      {
+        "id": "fs-e-01",
+        "question": "Explain the request-response cycle in a web application.",
+        "competency": "technical",
+        "difficulty": 1,
+        "tags": ["http","lifecycle","backend"],
+        "followup_ids": ["fs-e-02"],
+        "weight": 1,
+        "keywords": ["http","request","response","server","client"],
+        "example_answer": "Client sends an HTTP request (URL, headers, body) to server. Server routes to controller, executes business logic, may query DB, builds an HTTP response (status, headers, body) which the client receives and renders."
+      },
+      {
+        "id": "fs-e-02",
+        "question": "What is REST and what are common HTTP verbs used in RESTful APIs?",
+        "competency": "technical",
+        "difficulty": 1,
+        "tags": ["api","rest","http"],
+        "followup_ids": [],
+        "weight": 1,
+        "keywords": ["REST","GET","POST","PUT","DELETE","idempotent"],
+        "example_answer": "REST is an architectural style for stateless APIs with resources identified by URLs. Common verbs: GET (read), POST (create), PUT/PATCH (update), DELETE (remove)."
+      },
+      {
+        "id": "fs-e-03",
+        "question": "How do you prevent SQL injection in a web app?",
+        "competency": "technical",
+        "difficulty": 1,
+        "tags": ["security","database","validation"],
+        "followup_ids": [],
+        "weight": 1,
+        "keywords": ["sql injection","parameterized","prepared","sanitize","orm"],
+        "example_answer": "Use parameterized queries/prepared statements or an ORM, validate and sanitize inputs, use least-privilege DB accounts, and escape correctly when necessary."
+      },
+      {
+        "id": "fs-e-04",
+        "question": "Describe CORS and why it matters for frontend-backend integration.",
+        "competency": "technical",
+        "difficulty": 1,
+        "tags": ["cors","frontend","security"],
+        "followup_ids": [],
+        "weight": 1,
+        "keywords": ["CORS","origin","Access-Control-Allow-Origin","browser","security"],
+        "example_answer": "CORS is a browser security mechanism that blocks cross-origin requests unless the server includes appropriate Access-Control-* headers to permit them."
+      }
+    ],
+    "medium": [
+      {
+        "id": "fs-m-01",
+        "question": "Design a simple web app architecture for a todo app with 10k daily users. Mention components and scaling considerations.",
+        "competency": "technical",
+        "difficulty": 2,
+        "tags": ["architecture","scaling","cache"],
+        "followup_ids": ["fs-m-02"],
+        "weight": 2,
+        "keywords": ["load balancer","stateless","database","cache","cdn","replica"],
+        "example_answer": "Use a load balancer to distribute traffic to stateless app servers, a relational DB with read replicas, Redis cache for hot reads, CDN for static assets, autoscaling groups and monitoring for horizontal scaling."
+      },
+      {
+        "id": "fs-m-02",
+        "question": "How do you design authentication and authorization for a web app?",
+        "competency": "technical",
+        "difficulty": 2,
+        "tags": ["auth","security","tokens"],
+        "followup_ids": [],
+        "weight": 2,
+        "keywords": ["JWT","session","oauth","roles","refresh token"],
+        "example_answer": "Use short-lived access tokens (JWT) with refresh tokens stored securely (HTTP-only cookies), enforce RBAC/ABAC server-side, validate tokens and rotate secrets, and use OAuth for third-party auth."
+      },
+      {
+        "id": "fs-m-03",
+        "question": "Explain transaction handling and how to prevent race conditions during concurrent writes.",
+        "competency": "technical",
+        "difficulty": 2,
+        "tags": ["database","transactions","concurrency"],
+        "followup_ids": [],
+        "weight": 2,
+        "keywords": ["transaction","isolation","locking","optimistic","pessimistic","version"],
+        "example_answer": "Use DB transactions with proper isolation; use optimistic locking (version numbers) or pessimistic locks for concurrent updates; design idempotent operations and retries when appropriate."
+      }
+    ],
+    "senior": [
+      {
+        "id": "fs-s-01",
+        "question": "Design a feature-flag system for a large-scale web app. How would you roll out and monitor flags?",
+        "competency": "technical",
+        "difficulty": 3,
+        "tags": ["feature_flag","release","monitoring"],
+        "followup_ids": ["fs-s-02"],
+        "weight": 3,
+        "keywords": ["feature flag","canary","rollout","metrics","audit"],
+        "example_answer": "Implement a central flags service with SDKs, support percentage rollouts and user targeting, use local caching, monitor key metrics during rollouts and enable quick rollback with audit logs and RBAC."
+      },
+      {
+        "id": "fs-s-02",
+        "question": "How would you approach reducing the 99th percentile latency of an API endpoint?",
+        "competency": "technical",
+        "difficulty": 3,
+        "tags": ["performance","p99","profiling"],
+        "followup_ids": [],
+        "weight": 3,
+        "keywords": ["p99","profiling","cache","queue","bottleneck","tracing"],
+        "example_answer": "Use tracing to find hotspots, optimize slow DB queries, add caching for expensive reads, convert sync tasks to background jobs, tune resource pools, and apply circuit breakers to protect the service."
+      },
+      {
+        "id": "fs-s-03",
+        "question": "How would you design a rollback strategy for a risky database schema migration on production?",
+        "competency": "technical",
+        "difficulty": 3,
+        "tags": ["database","migration","reliability"],
+        "followup_ids": [],
+        "weight": 3,
+        "keywords": ["migration","backwards-compatible","blue-green","rollback","zero downtime"],
+        "example_answer": "Use backward-compatible changes, deploy code that supports both schema versions, run migrations in steps, use feature flags, create a rollback plan and backups, and test in staging with traffic replay before production."
+      }
+    ]
+  }
+}
