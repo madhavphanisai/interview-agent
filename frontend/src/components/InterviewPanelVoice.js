@@ -1,0 +1,240 @@
+// InterviewPanelVoice.js (updated to show only LM text after "LM:")
+import React, { useRef, useState } from "react";
+import VoiceControls from "./VoiceControls";
+import FeedbackModal from "./FeedbackModal";   // adjust path if needed
+
+const API_BASE = "http://127.0.0.1:8000";
+
+function speakText(text, onEnd) {
+  if (!window.speechSynthesis) {
+    if (onEnd) setTimeout(onEnd, 250);
+    return;
+  }
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 1.0;
+    u.pitch = 1.0;
+    u.onend = () => { if (onEnd) onEnd(); };
+    window.speechSynthesis.speak(u);
+  } catch (e) {
+    console.warn("TTS error", e);
+    if (onEnd) setTimeout(onEnd, 250);
+  }
+}
+
+// return LM-only portion if present, else original follow string
+function extractLM(follow) {
+  if (!follow || typeof follow !== "string") return follow;
+  // look for "LM:" or "| LM:" case-insensitive
+  const markerRegex = /\bLM:\s*(.*)$/i;
+  // try first to find pattern like " | LM: ...."
+  const pipeMatch = follow.match(/\|\s*LM:\s*(.*)$/i);
+  if (pipeMatch && pipeMatch[1]) {
+    return pipeMatch[1].trim();
+  }
+  // fallback: find "LM: ..." anywhere
+  const m = follow.match(markerRegex);
+  if (m && m[1]) return m[1].trim();
+  // if none found, but string contains "LM:" with some other punctuation, try splitting
+  const idx = follow.toUpperCase().indexOf("LM:");
+  if (idx >= 0) {
+    return follow.slice(idx + 3).trim();
+  }
+  // nothing matched — return original
+  return follow;
+}
+
+export default function InterviewPanelVoice() {
+  const [role, setRole] = useState("dsa");
+  const [level, setLevel] = useState("entry");
+  const [sessionId, setSessionId] = useState(null);
+  const [question, setQuestion] = useState("Press Start to begin the interview.");
+  const [answer, setAnswer] = useState("");
+  const [transcript, setTranscript] = useState([]);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [feedbackData, setFeedbackData] = useState(null);
+  const [followUp, setFollowUp] = useState(null);
+  const [done, setDone] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const vcRef = useRef(null);
+  const answerRef = useRef();
+
+  async function startInterview() {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/start_interview`, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ role, level })
+      });
+      const j = await res.json();
+      setSessionId(j.session_id);
+      setQuestion(j.question);
+      setTranscript([]);
+      setFollowUp(null);
+      setDone(false);
+
+      speakText(j.question, () => {
+        setTimeout(()=> { try { vcRef.current && vcRef.current.start(); } catch {} }, 220);
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Failed to start interview. Check backend.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function submitAnswer({ skip=false, hint=false, answerText=null } = {}) {
+    if (!sessionId) return alert("Start interview first");
+    setLoading(true);
+    try {
+      const textToSend = skip ? "" : (answerText !== null ? answerText : answer);
+      const payload = { session_id: sessionId, answer: textToSend, skip, hint };
+      const res = await fetch(`${API_BASE}/answer`, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(payload)
+      });
+      const j = await res.json();
+
+      // extract only LM part from follow_up (if any)
+      const rawFollow = j.follow_up;
+      const lmOnly = extractLM(rawFollow);
+
+      setTranscript(t => [...t, { q: question, a: skip ? "(skipped)" : textToSend, follow: lmOnly, score: j.auto_score }]);
+      setFollowUp(lmOnly);
+
+      const toSpeak = lmOnly || j.next_question || (j.done ? "Interview complete." : null);
+
+      if (toSpeak) {
+        speakText(toSpeak, () => {
+          if (j.next_question && !j.done) {
+            setTimeout(()=> {
+              try { vcRef.current && vcRef.current.start(); } catch {}
+            }, 250);
+          }
+        });
+      }
+
+      if (j.next_question) {
+        setQuestion(j.next_question);
+      } else {
+        setQuestion("Interview complete — click Get Feedback");
+        setDone(j.done);
+      }
+
+      setAnswer("");
+      setTimeout(()=> answerRef.current && answerRef.current.focus(), 200);
+    } catch (err) {
+      console.error(err);
+      alert("Error submitting answer.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function onVoiceResult(text) {
+    submitAnswer({ skip:false, hint:false, answerText: text });
+  }
+
+  async function getFeedback() {
+  if (!sessionId) return alert("Start interview first");
+  setLoading(true);
+  try {
+    const res = await fetch(`${API_BASE}/feedback/${sessionId}`);
+    if (!res.ok) throw new Error(`Feedback fetch failed: ${res.status}`);
+    const j = await res.json();
+    setFeedbackData(j);
+    setFeedbackOpen(true);
+
+    // optional: short TTS summary
+    if (j.avg_score !== undefined && typeof j.avg_score === "number") {
+      speakText(`Your overall score is ${j.avg_score.toFixed(1)} out of 5.`);
+    }
+    console.log("Feedback:", j);
+  } catch (err) {
+    console.error(err);
+    alert("Failed to fetch feedback.");
+  } finally {
+    setLoading(false);
+  }
+}
+
+
+  return (
+    <div style={{display:"grid", gridTemplateColumns:"1fr 360px", gap:16, padding:18}}>
+      <div style={{border:"1px solid #ddd", padding:16, borderRadius:8}}>
+        <div style={{display:"flex", gap:10, alignItems:"center"}}>
+          <label>Domain:</label>
+          <select value={role} onChange={(e)=>setRole(e.target.value)}>
+            <option value="dsa">DSA</option>
+            <option value="full_stack_developer">Full Stack</option>
+            <option value="machine_learning">ML</option>
+            <option value="front_end">Front End</option>
+          </select>
+          <label>Level:</label>
+          <select value={level} onChange={(e)=>setLevel(e.target.value)}>
+            <option value="entry">Entry</option>
+            <option value="medium">Medium</option>
+            <option value="senior">Senior</option>
+          </select>
+          <button onClick={startInterview} disabled={loading} style={{marginLeft:"auto"}}>Start Interview</button>
+        </div>
+
+        <hr style={{margin:"12px 0"}}/>
+
+        <div>
+          <div style={{fontSize:18, fontWeight:600}}>Question</div>
+          <div style={{minHeight:80, padding:12, background:"#fafafa", borderRadius:6, marginTop:8}}>
+            {question}
+          </div>
+
+          {followUp && <div style={{marginTop:10, padding:8, background:"#fffbe6", borderLeft:"4px solid #f0c040"}}>
+            <b>Interviewer follow-up:</b> {followUp}
+          </div>}
+
+          <div style={{marginTop:12}}>
+            <textarea ref={answerRef} rows={5} value={answer} onChange={(e)=>setAnswer(e.target.value)} placeholder="Type your answer (or use voice)..." style={{width:"100%", padding:8}}/>
+            <div style={{display:"flex", gap:8, marginTop:8, alignItems:"center"}}>
+              <button onClick={()=>submitAnswer({skip:false})} disabled={loading}>Submit Answer</button>
+              <button onClick={()=>submitAnswer({skip:true})} disabled={loading}>Skip</button>
+              <button onClick={()=>submitAnswer({hint:true})} disabled={loading}>Ask for hint</button>
+
+              <div style={{marginLeft:"auto"}}>
+                <VoiceControls ref={vcRef} onResult={onVoiceResult} interimCallback={(t)=>{/* optional interim UI */}} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{border:"1px solid #eee", padding:12, borderRadius:8, height:"70vh", overflow:"auto"}}>
+        <div style={{display:"flex", gap:8, alignItems:"center", marginBottom:8}}>
+          <h4 style={{margin:0}}>Transcript</h4>
+          <button onClick={()=>{ setTranscript([]); setFollowUp(null); }}>Clear</button>
+          <button style={{marginLeft:"auto"}} onClick={getFeedback} disabled={!done && transcript.length===0}>Get Feedback</button>
+        </div>
+
+        <div>
+          {transcript.map((t,i)=>((
+            <div key={i} style={{padding:8, borderBottom:"1px dashed #eee"}}>
+              <div style={{fontSize:13, color:"#444"}}><b>Q:</b> {t.q}</div>
+              <div style={{marginTop:6}}><b>A:</b> {t.a}</div>
+              {t.follow && <div style={{marginTop:6, color:"#666"}}><i>Follow-up: </i>{t.follow}</div>}
+              <div style={{marginTop:6, fontSize:12, color:"#888"}}>Auto-score: {t.score}</div>
+            </div>
+          )))}
+        </div>
+      </div>
+      <FeedbackModal
+  open={feedbackOpen}
+  onClose={() => setFeedbackOpen(false)}
+  score={feedbackData?.avg_score ?? feedbackData?.avgScore ?? null}
+/>
+
+    </div>
+  );
+}
